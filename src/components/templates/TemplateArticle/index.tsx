@@ -4,6 +4,7 @@ import VerifiedIcon from '../../../../public/assets/imgs/VerifiedIcon.png'
 import Image from 'next/image'
 import exampleContentArticle from './articleContentExample'
 import AuthorImage from '../../../../public/assets/imgs/devlopImages/AuthorImage.png'
+import Link from 'next/link'
 
 export default function TemplateArticle() {
   return (
@@ -15,7 +16,7 @@ export default function TemplateArticle() {
             eiusmod tempor incididunt ut labore
           </h1>
           <StyledCreationData>
-            <div>
+            <Link href="/autor/exemplo">
               Por: Heitor Queiroga Duarte
               <Image
                 alt="Ícone de verificado"
@@ -24,7 +25,7 @@ export default function TemplateArticle() {
                 height={18}
                 className="verified-icon"
               />
-            </div>
+            </Link>
             <div>Editado a última vez em: 01/10/2022</div>
           </StyledCreationData>
           <StyledContent dangerouslySetInnerHTML={exampleContentArticle} />
@@ -160,7 +161,8 @@ const StyledCreationData = styled.div`
 
   margin: 0 0 10px 0;
 
-  div {
+  div,
+  a {
     display: flex;
     align-items: center;
 
@@ -168,6 +170,7 @@ const StyledCreationData = styled.div`
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
+    text-decoration: none;
 
     color: #000000;
   }

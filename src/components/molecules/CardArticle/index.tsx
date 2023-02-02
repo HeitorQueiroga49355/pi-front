@@ -36,7 +36,7 @@ export default function CardArticle() {
               width={25}
               height={25}
             />
-            <span>Heitor Queiroga</span>
+            <Link href="/autor/exemplo">Heitor Queiroga</Link>
           </DataAuthor>
           <PostDate>19 de Setembro de 2022</PostDate>
         </DataArticle>
@@ -166,7 +166,7 @@ const DataAuthor = styled.div`
     border-radius: 100%;
   }
 
-  span {
+  a {
     font-family: Poppins;
     font-weight: 500;
     font-size: 11px;

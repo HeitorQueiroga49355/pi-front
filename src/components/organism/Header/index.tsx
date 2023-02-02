@@ -35,17 +35,7 @@ export default function Header() {
             <WrapperDiv gap="40px">
               <StyledUL gap="8px">
                 <li>
-                  <Link
-                    href={'https://paglaum.io'}
-                    style={{
-                      color: '#A6AAAD',
-                      textDecoration: 'none',
-                      fontWeight: '500',
-                      lineHeight: ' 21px'
-                    }}
-                  >
-                    <div>Site oficial</div>
-                  </Link>
+                  <Link href="https://paglaum.io">Site oficial</Link>
                 </li>
                 <li>
                   <div
@@ -109,6 +99,9 @@ export default function Header() {
                       </DropdowContent>
                     </Dropdown>
                   </div>
+                </li>
+                <li>
+                  <Link href="/editar-documento">Escrever</Link>
                 </li>
               </StyledUL>
             </WrapperDiv>
@@ -175,6 +168,13 @@ const StyledUL = styled.div`
     width: 128px;
     justify-content: space-between;
     align-items: center;
+  }
+
+  a {
+    color: #a6aaad;
+    text-decoration: none;
+    line-height: 21px;
+    font-weight: 500;
   }
 `
 
