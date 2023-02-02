@@ -27,7 +27,7 @@ export default function Header() {
       >
         <div className="main-links">
           <div className={hideElements && width < 960 ? 'hidden' : 'show'}>
-            <Link href="/">
+            <Link className="logo-link" href="/">
               <Image className="logo" src={logo} alt="logo" />
             </Link>
           </div>
@@ -180,7 +180,7 @@ const StyledUL = styled.div`
 
 const HeaderDiv = styled.header`
   width: 100%;
-  padding: 8px 80px;
+  padding: 15px 80px;
 
   background-color: #fff;
   border-bottom: 1px solid #eef2f5;
@@ -225,7 +225,13 @@ const HeaderDiv = styled.header`
   }
 
   div.show {
-    display: inline;
+    display: flex;
+
+    height: max-content;
+  }
+
+  a.logo-link {
+    height: 48px;
   }
 `
 
