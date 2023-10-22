@@ -5,6 +5,7 @@ import Image from 'next/image'
 import exampleContentArticle from './articleContentExample'
 import AuthorImage from '../../../../public/assets/imgs/devlopImages/AuthorImage.png'
 import Link from 'next/link'
+import { CommentsOnArticle } from '../../organism/CommentsOnArticle'
 
 export default function TemplateArticle() {
   return (
@@ -29,6 +30,7 @@ export default function TemplateArticle() {
             <div>Editado a última vez em: 01/10/2022</div>
           </StyledCreationData>
           <StyledContent dangerouslySetInnerHTML={exampleContentArticle} />
+          <CommentsOnArticle />
         </StyledMain>
         <StyledAside>
           <button>
