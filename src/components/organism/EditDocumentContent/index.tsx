@@ -2,9 +2,11 @@ import NextImage from 'next/image'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import UploadImage from '../../../../public/assets/imgs/uploadImage.png'
+import { useRouter } from 'next/router'
 
 export default function EditDocumentContent() {
   const [articleCover, setArticleCover] = useState<string | undefined | null>()
+  const router = useRouter()
 
   useEffect(() => {
     const table: any = document.querySelector('.icon-table')
@@ -98,7 +100,10 @@ export default function EditDocumentContent() {
           hidden
         />
         <form>
-          <h2>Criação/Edição de artigos</h2>
+          <h2>
+            {router.asPath.includes('criar-documento') ? 'Criação' : 'Edição'}
+            de artigos
+          </h2>
 
           <input
             type="text"
