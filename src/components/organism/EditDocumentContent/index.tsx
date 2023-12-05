@@ -101,7 +101,7 @@ export default function EditDocumentContent() {
         />
         <form>
           <h2>
-            {router.asPath.includes('criar-documento') ? 'Criação' : 'Edição'}
+            {router.asPath.includes('criar-documento') ? 'Criação ' : 'Edição '}
             de artigos
           </h2>
 

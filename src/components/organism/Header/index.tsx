@@ -101,7 +101,7 @@ export default function Header() {
                   </div>
                 </li>
                 <li>
-                  <Link href="/editar-documento">Escrever</Link>
+                  <Link href="/criar-documento">Escrever</Link>
                 </li>
               </StyledUL>
             </WrapperDiv>
