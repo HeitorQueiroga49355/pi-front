@@ -153,9 +153,10 @@ const Container = styled.section`
   border-radius: 8px;
   min-width: 400px;
   max-width: 600px;
+  max-height: 100vh;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 16px;
   padding: 24px;
