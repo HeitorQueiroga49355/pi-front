@@ -3,7 +3,13 @@ import styled from 'styled-components'
 import CardArticle from '../../molecules/CardArticle'
 import { useRouter } from 'next/router'
 
-export default function InfinityScrollArticles() {
+interface IInfinityScrollArticles {
+  articlesList: any
+}
+
+export default function InfinityScrollArticles({
+  articlesList
+}: IInfinityScrollArticles) {
   const router = useRouter()
 
   useEffect(() => {
@@ -12,22 +18,25 @@ export default function InfinityScrollArticles() {
     }
   }, [router.query.page])
 
+  function getArrayOfNumberOfPages() {
+    const array = []
+    // const qunt_
+    for (let i = 0; i < articlesList.count / 20; i++) {
+      array.push(i + 1)
+    }
+    return array
+  }
+
   return (
     <Section>
       <Main>
-        <CardArticle />
-        <CardArticle />
-        <CardArticle />
-        <CardArticle />
-        <CardArticle />
-        <CardArticle />
-        <CardArticle />
-        <CardArticle />
-        <CardArticle />
+        {articlesList.results.map(element => {
+          return <CardArticle key={element.id} articleData={element} />
+        })}
       </Main>
       <ArticlePagination>
         <button className="selected">{'<'}</button>
-        {[1, 2, 3].map((element, index) => {
+        {getArrayOfNumberOfPages().map((element, index) => {
           return (
             <button
               key={index}

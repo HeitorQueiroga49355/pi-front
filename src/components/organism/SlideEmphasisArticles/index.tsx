@@ -2,7 +2,6 @@ import React, { useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import styled from 'styled-components'
-import ExampleMainArticle from '../../../../public/assets/imgs/devlopImages/ExampleEmphasisArticle.png'
 import Image from 'next/image'
 import Link from 'next/link'
 

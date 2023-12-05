@@ -18,15 +18,28 @@ export default function Home({ articles, emphasisArticles }: IHome) {
       <Header />
       <HomePageTitle />
       <SlideEmphasisArticles emphasisArticles={emphasisArticles} />
-      <PaginationArticles />
+      <PaginationArticles articlesList={articles} />
       <Footer />
     </>
   )
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const articles = await getArticles({ limit: 20, offset: 0 })
+  const { query } = context
+  const currentPageObject = query.page
+    ? { limit: 20, offset: (parseInt(query.page.toString()) - 1) * 20 }
+    : { limit: 20, offset: 0 }
+  const articles = await getArticles(currentPageObject)
+  if (articles.results.length === 0) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
   const emphasisArticles = await getEmphasisArticles()
+  console.log(emphasisArticles)
   return {
     props: {
       articles,

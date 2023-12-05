@@ -5,36 +5,33 @@ import styled from 'styled-components'
 import ArticleMainImage from '../../../../public/assets/imgs/devlopImages/ArticleMainImage.png'
 import AuthorImage from '../../../../public/assets/imgs/devlopImages/AuthorImage.png'
 
-export default function CardArticle() {
+interface ICardArticle {
+  articleData: any
+}
+
+export default function CardArticle({ articleData }: ICardArticle) {
   return (
     <CardWrapper>
       <WrapperImage>
-        <Link href="/artigo/exemplo">
+        <Link href={`/artigo/${articleData.id}`}>
           <Image
             className="front-cover-article"
             alt="Capa do artigo"
-            src={ArticleMainImage}
+            src={articleData.cover_image}
+            quality={50}
             fill
           />
         </Link>
       </WrapperImage>
       <DataArticle>
-        <Link href="/artigo/exemplo">
-          <h4>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam
-          </h4>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam
-          </p>
+        <Link href={`/artigo/${articleData.id}`}>
+          <h4>{articleData.title}</h4>
+          <p>{articleData.subtitle}</p>
         </Link>
         <DataAuthor>
           <Image
             className="author-image"
-            src={AuthorImage}
+            src={articleData.author.image_profile}
             alt="Foto do autor do artigo"
             width={25}
             height={25}
@@ -109,9 +106,9 @@ const DataArticle = styled.div`
 
   h4 {
     height: 42px;
-
+    text-align: center;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 18px;
     line-height: 21px;
   }
 
