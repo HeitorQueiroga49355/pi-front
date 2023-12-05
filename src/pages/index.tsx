@@ -1,18 +1,36 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Header from '../components/organism/Header'
 import HomePageTitle from '../components/molecules/HomePageTitle'
 import SlideEmphasisArticles from '../components/organism/SlideEmphasisArticles'
 import PaginationArticles from '../components/organism/PaginationArticles'
 import Footer from '../components/organism/Footer'
+import { GetServerSidePropsContext } from 'next'
+import { getArticles, getEmphasisArticles } from '../services/articles'
 
-export default function Home() {
+interface IHome {
+  articles: any
+  emphasisArticles: any
+}
+
+export default function Home({ articles, emphasisArticles }: IHome) {
   return (
     <>
       <Header />
       <HomePageTitle />
-      <SlideEmphasisArticles />
+      <SlideEmphasisArticles emphasisArticles={emphasisArticles} />
       <PaginationArticles />
       <Footer />
     </>
   )
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const articles = await getArticles({ limit: 20, offset: 0 })
+  const emphasisArticles = await getEmphasisArticles()
+  return {
+    props: {
+      articles,
+      emphasisArticles
+    }
+  }
 }

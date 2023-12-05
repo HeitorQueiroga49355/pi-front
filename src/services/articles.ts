@@ -1,0 +1,20 @@
+import axios from 'axios'
+
+const URL = process.env.NEXT_PUBLIC_BACK_URL
+
+export async function getArticles(pagination?: {
+  limit: number
+  offset: number
+}) {
+  const articles = await axios.get(
+    `${URL}api/v1/articles?${
+      pagination ? `limit=${pagination.limit}&offset=${pagination.offset}` : ''
+    }`
+  )
+  return articles.data
+}
+
+export async function getEmphasisArticles() {
+  const emphasisArticles = await axios.get(`${URL}api/v1/articles/emphasis/`)
+  return emphasisArticles.data
+}

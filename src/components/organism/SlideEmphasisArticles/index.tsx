@@ -6,7 +6,13 @@ import ExampleMainArticle from '../../../../public/assets/imgs/devlopImages/Exam
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default function SlideEmphasisArticles() {
+interface ISlideEmphasisArticles {
+  emphasisArticles: any
+}
+
+export default function SlideEmphasisArticles({
+  emphasisArticles
+}: ISlideEmphasisArticles) {
   const swiperRef = useRef<any>()
 
   return (
@@ -20,13 +26,32 @@ export default function SlideEmphasisArticles() {
           }}
         >
           <SwiperSlide>
-            <SlideExample />
-          </SwiperSlide>
-          <SwiperSlide>
-            <SlideExample />
-          </SwiperSlide>
-          <SwiperSlide>
-            <SlideExample />
+            <SlideContent>
+              <Image
+                src={ExampleMainArticle}
+                className="wrapper-image"
+                alt="Capa do artigo"
+              />
+              <div>
+                <h3>
+                  <Link href={'/artigo/exemplo'}>
+                    A história das criptomoedas, como se tornaram o que é hoje
+                  </Link>
+                </h3>
+                <Link href={'/artigo/exemplo'}>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Duis aute irure dolor in reprehenderit in voluptate velit
+                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                    occaecat cupidatat non proident, sunt in culpa qui officia
+                    deserunt mollit anim id est laborum.
+                  </p>
+                </Link>
+              </div>
+            </SlideContent>
           </SwiperSlide>
         </Swiper>
         <ButtonNextSled
@@ -47,32 +72,6 @@ export default function SlideEmphasisArticles() {
         </ButtonNextSled>
       </WrapperSlide>
     </GeneralWrapper>
-  )
-}
-
-function SlideExample() {
-  return (
-    <Link href={'/artigo/exemplo'}>
-      <SlideContent>
-        <Image
-          src={ExampleMainArticle}
-          className="wrapper-image"
-          alt="Capa do artigo"
-        />
-        <div>
-          <h3>A história das criptomoedas, como se tornaram o que é hoje</h3>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
-        </div>
-      </SlideContent>
-    </Link>
   )
 }
 

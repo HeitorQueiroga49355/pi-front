@@ -8,16 +8,18 @@ import AuthorImage from '../../../../public/assets/imgs/devlopImages/AuthorImage
 export default function CardArticle() {
   return (
     <CardWrapper>
-      <Link href="/artigo/exemplo">
-        <WrapperImage>
+      <WrapperImage>
+        <Link href="/artigo/exemplo">
           <Image
             className="front-cover-article"
             alt="Capa do artigo"
             src={ArticleMainImage}
             fill
           />
-        </WrapperImage>
-        <DataArticle>
+        </Link>
+      </WrapperImage>
+      <DataArticle>
+        <Link href="/artigo/exemplo">
           <h4>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
@@ -28,19 +30,19 @@ export default function CardArticle() {
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
             ad minim veniam
           </p>
-          <DataAuthor>
-            <Image
-              className="author-image"
-              src={AuthorImage}
-              alt="Foto do autor do artigo"
-              width={25}
-              height={25}
-            />
-            <Link href="/autor/exemplo">Heitor Queiroga</Link>
-          </DataAuthor>
-          <PostDate>19 de Setembro de 2022</PostDate>
-        </DataArticle>
-      </Link>
+        </Link>
+        <DataAuthor>
+          <Image
+            className="author-image"
+            src={AuthorImage}
+            alt="Foto do autor do artigo"
+            width={25}
+            height={25}
+          />
+          <Link href="/autor/exemplo">Heitor Queiroga</Link>
+        </DataAuthor>
+        <PostDate>19 de Setembro de 2022</PostDate>
+      </DataArticle>
     </CardWrapper>
   )
 }
