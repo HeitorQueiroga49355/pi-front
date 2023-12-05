@@ -25,34 +25,36 @@ export default function SlideEmphasisArticles({
             swiperRef.current = swiper
           }}
         >
-          <SwiperSlide>
-            <SlideContent>
-              <Image
-                src={ExampleMainArticle}
-                className="wrapper-image"
-                alt="Capa do artigo"
-              />
-              <div>
-                <h3>
-                  <Link href={'/artigo/exemplo'}>
-                    A história das criptomoedas, como se tornaram o que é hoje
-                  </Link>
-                </h3>
-                <Link href={'/artigo/exemplo'}>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat non proident, sunt in culpa qui officia
-                    deserunt mollit anim id est laborum.
-                  </p>
-                </Link>
-              </div>
-            </SlideContent>
-          </SwiperSlide>
+          {emphasisArticles.map(element => {
+            return (
+              <SwiperSlide key={element.id}>
+                <SlideContent>
+                  <div className="wrapper-image">
+                    <Link href={`/artigo/${element.id}`}>
+                      <Image
+                        objectFit="cover"
+                        fill
+                        src={
+                          process.env.NEXT_PUBLIC_BACK_URL + element.cover_image
+                        }
+                        alt="Capa do artigo"
+                      />
+                    </Link>
+                  </div>
+                  <div>
+                    <h3>
+                      <Link href={`/artigo/${element.id}`}>
+                        {element.title}
+                      </Link>
+                    </h3>
+                    <Link href={`/artigo/${element.id}`}>
+                      <p>{element.subtitle}</p>
+                    </Link>
+                  </div>
+                </SlideContent>
+              </SwiperSlide>
+            )
+          })}
         </Swiper>
         <ButtonNextSled
           onClick={() => {
@@ -146,10 +148,15 @@ const SlideContent = styled.div`
     color: #545454;
   }
 
-  img.wrapper-image {
-    min-width: 510px;
-    height: max-content;
+  div.wrapper-image {
+    min-width: 400px;
+    min-height: 300px;
+    width: 100%;
+    /* height: 500px; */
+
+    /* height: max-content; */
     object-fit: cover;
+    position: relative;
 
     margin: 0 60px 0 0;
   }
