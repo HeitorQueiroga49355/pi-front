@@ -10,9 +10,11 @@ import YouTubeIcon from '../../../../public/assets/imgs/youtubeIcon.png'
 import InstagramIcon from '../../../../public/assets/imgs/InstagramIcon.png'
 import TwitterIcon from '../../../../public/assets/imgs/TwitterIcon.png'
 import useGetWidth from '../../../hooks/useGetWidth'
+import ModalLogin from '../../molecules/ModalLogin'
 
 export default function Header() {
   const [openDropdown, setOpenDropdown] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
   const socialMediaDropdownRef = useRef<DropdownFunctions>()
   const [hideElements, setHideElements] = useState(false)
   const width = useGetWidth()
@@ -114,7 +116,10 @@ export default function Header() {
             placeholder={width > 480 ? 'Pesquisar' : ''}
           />
           <div className={hideElements && width < 960 ? 'hidden' : 'show'}>
-            <Button>Login</Button>
+            <Button onClick={() => setOpenModal(true)}>Login</Button>
+            {openModal && (
+              <ModalLogin closeMethod={() => setOpenModal(false)} />
+            )}
           </div>
         </WrapperDiv>
       </div>
