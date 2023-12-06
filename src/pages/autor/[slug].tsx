@@ -9,7 +9,7 @@ export default function Author() {
     <>
       <Header />
       <AuthorDataSection />
-      <InfinityScrollArticles />
+      {/* <InfinityScrollArticles /> */}
       <Footer />
     </>
   )

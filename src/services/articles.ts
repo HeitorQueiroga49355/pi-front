@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const URL = process.env.NEXT_PUBLIC_BACK_URL
+export const URL = process.env.NEXT_PUBLIC_BACK_URL
 
 export async function getArticles(pagination?: {
   limit: number
@@ -17,4 +17,9 @@ export async function getArticles(pagination?: {
 export async function getEmphasisArticles() {
   const emphasisArticles = await axios.get(`${URL}api/v1/articles/emphasis/`)
   return emphasisArticles.data
+}
+
+export async function getArticleData(articleSlug: string) {
+  const articleData = await axios.get(`${URL}api/v1/articles/${articleSlug}`)
+  return articleData.data
 }

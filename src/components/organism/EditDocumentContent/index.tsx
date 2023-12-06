@@ -85,8 +85,6 @@ export default function EditDocumentContent() {
       cover: articleCover,
       articleContent: document.getElementById('editor').innerHTML
     }
-    console.log(dataToPrint)
-    console.log(dataToPrint.cover)
   }
 
   return (

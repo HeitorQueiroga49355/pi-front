@@ -39,7 +39,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
   const emphasisArticles = await getEmphasisArticles()
-  console.log(emphasisArticles)
   return {
     props: {
       articles,

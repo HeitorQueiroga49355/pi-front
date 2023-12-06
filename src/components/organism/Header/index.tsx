@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import Image from 'next/image'
 import logo from '../../../../public/assets/imgs/logoWithName.png'
 import styled from 'styled-components'
@@ -11,12 +11,15 @@ import InstagramIcon from '../../../../public/assets/imgs/InstagramIcon.png'
 import TwitterIcon from '../../../../public/assets/imgs/TwitterIcon.png'
 import useGetWidth from '../../../hooks/useGetWidth'
 import ModalLogin from '../../molecules/ModalLogin'
+import { userContext } from '../../../contexts/userDataContext'
+import { URL } from '../../../services/articles'
 
 export default function Header() {
   const [openDropdown, setOpenDropdown] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const socialMediaDropdownRef = useRef<DropdownFunctions>()
   const [hideElements, setHideElements] = useState(false)
+  const { userData } = useContext(userContext)
   const width = useGetWidth()
 
   return (
@@ -116,7 +119,17 @@ export default function Header() {
             placeholder={width > 480 ? 'Pesquisar' : ''}
           />
           <div className={hideElements && width < 960 ? 'hidden' : 'show'}>
-            <Button onClick={() => setOpenModal(true)}>Login</Button>
+            {userData?.id !== undefined ? (
+              <div className="wrapperImageProfile">
+                <Image
+                  src={`${URL}${userData.image_profile}`}
+                  fill
+                  alt="profile image"
+                />
+              </div>
+            ) : (
+              <Button onClick={() => setOpenModal(true)}>Login</Button>
+            )}
             {openModal && (
               <ModalLogin closeMethod={() => setOpenModal(false)} />
             )}
@@ -132,6 +145,18 @@ const WrapperDiv = styled.ul`
   list-style: none;
   flex-direction: row;
   gap: ${(props: { gap: string }) => props.gap};
+
+  .wrapperImageProfile {
+    cursor: pointer;
+
+    position: relative;
+    width: 45px;
+    height: 45px;
+
+    img {
+      border-radius: 100%;
+    }
+  }
 `
 
 const StyledUL = styled.div`

@@ -2,52 +2,77 @@ import React from 'react'
 import styled from 'styled-components'
 import VerifiedIcon from '../../../../public/assets/imgs/VerifiedIcon.png'
 import Image from 'next/image'
-import exampleContentArticle from './articleContentExample'
 import AuthorImage from '../../../../public/assets/imgs/devlopImages/AuthorImage.png'
 import Link from 'next/link'
 import { CommentsOnArticle } from '../../organism/CommentsOnArticle'
+import { formatDataToBrasil } from '../../../utils/formatData'
 
-export default function TemplateArticle() {
+interface ITemplateArticle {
+  articleData: any
+  recentArticles: any
+}
+
+export default function TemplateArticle({
+  articleData,
+  recentArticles
+}: ITemplateArticle) {
   return (
     <StyledContainer>
       <div className="content-wrapper">
         <StyledMain>
-          <h1>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore
-          </h1>
+          <h1>{articleData.title}</h1>
           <StyledCreationData>
-            <Link href="/autor/exemplo">
-              Por: Heitor Queiroga Duarte
-              <Image
-                alt="Ícone de verificado"
-                src={VerifiedIcon}
-                width={18}
-                height={18}
-                className="verified-icon"
-              />
+            <Link href={`/autor/${articleData.author.id}`}>
+              Por:{' '}
+              {`${articleData.author.first_name} ${articleData.author.last_name}`}
+              {articleData.author.is_staff && (
+                <Image
+                  alt="Ícone de verificado"
+                  src={VerifiedIcon}
+                  width={18}
+                  height={18}
+                  className="verified-icon"
+                />
+              )}
             </Link>
-            <div>Editado a última vez em: 01/10/2022</div>
+            <div>
+              Editado a última vez em:{' '}
+              {formatDataToBrasil(articleData.last_edition)}
+            </div>
           </StyledCreationData>
-          <StyledContent dangerouslySetInnerHTML={exampleContentArticle} />
+          <StyledContent
+            dangerouslySetInnerHTML={{ __html: articleData.content }}
+          />
           <CommentsOnArticle />
         </StyledMain>
         <StyledAside>
-          <button>
+          {/* <button>
             Doar para o autor<strong>{'>'}</strong>
-          </button>
+          </button> */}
           <h3>Artigos recentes</h3>
-          {[1, 2, 3, 4, 5, 6, 7].map((element, index) => {
+          {recentArticles.results.map(element => {
             return (
-              <StyledCardRecentArticle key={index}>
+              <StyledCardRecentArticle key={element.id}>
                 <div className="title-article">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor Lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit, sed do eiusmod tempor
+                  <Link
+                    style={{ textDecoration: 'none', color: '#000' }}
+                    href={`/artigo/${element.id}/`}
+                  >
+                    {element.title}
+                  </Link>
                 </div>
                 <div className="author">
                   <Image alt={'imagem do autor'} src={AuthorImage} />
-                  Heitor Queiroga Duarte
+                  {`${articleData.author.first_name} ${articleData.author.last_name}`}
+                  {articleData.author.is_staff && (
+                    <Image
+                      alt="Ícone de verificado"
+                      src={VerifiedIcon}
+                      width={20}
+                      height={20}
+                      className="verified-icon"
+                    />
+                  )}
                 </div>
               </StyledCardRecentArticle>
             )
@@ -206,6 +231,8 @@ const StyledCardRecentArticle = styled.div`
   cursor: pointer;
   text-decoration: none;
 
+  margin: 24px 0 0 0;
+
   div.title-article {
     font-weight: 700;
     font-size: 18px;
@@ -220,7 +247,7 @@ const StyledCardRecentArticle = styled.div`
     -o-text-overflow: ellipsis;
     text-overflow: -o-ellipsis-lastline;
 
-    height: 54px;
+    height: max-content;
   }
 
   div.author {
@@ -236,6 +263,13 @@ const StyledCardRecentArticle = styled.div`
     align-items: center;
 
     color: #000000;
+  }
+
+  .verified-icon {
+    width: 18px;
+    height: 18px;
+
+    margin: 0 0 0 8px;
   }
 
   img {

@@ -3,9 +3,11 @@ import styled from 'styled-components'
 import Image from 'next/image'
 import IconClose from '../../../../public/assets/icons/closeIcon.svg'
 import Logo from '../../../../public/assets/imgs/logo.png'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useFormik } from 'formik'
 import { RegisterSchema, LoginSchema } from './schemas'
+import { submitLogin } from '../../../services/account'
+import { userContext } from '../../../contexts/userDataContext'
 
 interface ModalLoginProps {
   closeMethod: () => unknown
@@ -13,6 +15,7 @@ interface ModalLoginProps {
 
 export default function ModalLogin({ closeMethod }: ModalLoginProps) {
   const [selected, setSeleted] = useState<'left' | 'right'>('left')
+  const { setUserData } = useContext(userContext)
 
   const formRegister = useFormik({
     initialValues: {
@@ -31,7 +34,22 @@ export default function ModalLogin({ closeMethod }: ModalLoginProps) {
       password: ''
     },
     validationSchema: LoginSchema,
-    onSubmit: values => console.log(values)
+    onSubmit: values => {
+      submitLogin(
+        {
+          email: values.email,
+          password: values.password
+        },
+        setUserData
+      )
+        .then(() => {
+          closeMethod()
+        })
+        .catch(err => {
+          alert('Senha ou email incorretos')
+          console.log(err)
+        })
+    }
   })
 
   return (
