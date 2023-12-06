@@ -1,13 +1,7 @@
 import axios from 'axios'
-import { URL } from './articles'
+import { URL, accessVarName, refreshVarName } from './articles'
 import nookies, { parseCookies, destroyCookie, setCookie } from 'nookies'
-import { Dispatch, SetStateAction, useContext } from 'react'
-import { userContext } from '../contexts/userDataContext'
-
-const [access, refresh] = [
-  process.env.NEXT_PUBLIC_COOKIE_ACCESS,
-  process.env.NEXT_PUBLIC_COOKIE_REFRESH
-]
+import { Dispatch, SetStateAction } from 'react'
 
 export async function submitLogin(
   data: { email?: string; password?: string },
@@ -26,7 +20,7 @@ export async function getMeData(setUserData: Dispatch<SetStateAction<any>>) {
   const cookies = parseCookies()
   return axios
     .get(`${URL}api/v1/user/me`, {
-      headers: { Authorization: `Bearer ${cookies[access]}` }
+      headers: { Authorization: `Bearer ${cookies[accessVarName]}` }
     })
     .then(res => {
       return res.data
@@ -35,8 +29,8 @@ export async function getMeData(setUserData: Dispatch<SetStateAction<any>>) {
       if (res.response.status === 401) {
         const newTokenAccess = await refreshToken(setUserData)
         if (!newTokenAccess) {
-          destroyCookie(null, access)
-          destroyCookie(null, refresh)
+          destroyCookie(null, accessVarName)
+          destroyCookie(null, refreshVarName)
           return
         }
         return await axios
@@ -53,14 +47,14 @@ export async function getMeData(setUserData: Dispatch<SetStateAction<any>>) {
 export async function refreshToken(setUserData: Dispatch<SetStateAction<any>>) {
   const cookies = parseCookies()
   return axios
-    .post(`${URL}api/token/refresh/`, { refresh: cookies[refresh] })
+    .post(`${URL}api/token/refresh/`, { refresh: cookies[refreshVarName] })
     .then(res => {
-      setCookie(null, access, res.data.access)
+      setCookie(null, accessVarName, res.data.access)
       return res.data.access
     })
     .catch(() => {
-      destroyCookie(null, access)
-      destroyCookie(null, refresh)
+      destroyCookie(null, accessVarName)
+      destroyCookie(null, refreshVarName)
       setUserData({})
     })
 }
@@ -78,15 +72,15 @@ export async function updateBiography(content, setUserData) {
         biography: content
       },
       {
-        headers: { Authorization: `Bearer ${cookies[access]}` }
+        headers: { Authorization: `Bearer ${cookies[accessVarName]}` }
       }
     )
     .catch(async res => {
       if (res.response.status === 401) {
         const newTokenAccess = await refreshToken(setUserData)
         if (!newTokenAccess) {
-          destroyCookie(null, access)
-          destroyCookie(null, refresh)
+          destroyCookie(null, accessVarName)
+          destroyCookie(null, refreshVarName)
           return
         }
         return await axios

@@ -1,12 +1,16 @@
 import NextImage from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import UploadImage from '../../../../public/assets/imgs/uploadImage.png'
 import { useRouter } from 'next/router'
+import { userContext } from '../../../contexts/userDataContext'
+import { createArticle } from '../../../services/articles'
 
 export default function EditDocumentContent() {
   const [articleCover, setArticleCover] = useState<string | undefined | null>()
   const router = useRouter()
+  const { userData, setUserData } = useContext(userContext)
+  const articleCoverFile = useRef()
 
   useEffect(() => {
     const table: any = document.querySelector('.icon-table')
@@ -58,14 +62,14 @@ export default function EditDocumentContent() {
   }, [])
 
   function uploadArticleCover(event: any) {
-    const file = event.currentTarget.files[0]
+    articleCoverFile.current = event.currentTarget.files[0]
     const reader = new FileReader()
     const img: any = new Image(750)
     reader.onloadend = () => {
       img.src = reader.result
       setArticleCover(img.src)
     }
-    reader.readAsDataURL(file)
+    reader.readAsDataURL(articleCoverFile.current)
   }
 
   function link() {
@@ -76,15 +80,27 @@ export default function EditDocumentContent() {
     document.execCommand(comand)
   }
 
-  function printArticleData(event: any) {
+  function handleSubmitArticleData(event: any) {
     event.preventDefault()
-    const dataToPrint = {
-      title: (document.getElementById('title-input') as HTMLInputElement).value,
-      subtitle: (document.getElementById('subtitle-input') as HTMLInputElement)
-        .value,
-      cover: articleCover,
-      articleContent: document.getElementById('editor').innerHTML
-    }
+    const formData = new FormData()
+    formData.append(
+      'title',
+      (document.getElementById('title-input') as HTMLInputElement).value
+    )
+    formData.append(
+      'subtitle',
+      (document.getElementById('subtitle-input') as HTMLInputElement).value
+    )
+    formData.append('cover_image', articleCoverFile.current)
+    formData.append('content', document.getElementById('editor').innerHTML)
+    createArticle(formData, setUserData)
+      .then((res: any) => {
+        console.log(res)
+        router.push('/artigo/' + res.id)
+      })
+      .catch(error => {
+        alert(error)
+      })
   }
 
   return (
@@ -226,7 +242,7 @@ export default function EditDocumentContent() {
             <div id="editor" contentEditable />
           </StyledEditor>
           <div className="publish-button-wrapper">
-            <button onClick={printArticleData}>Publicar edição</button>
+            <button onClick={handleSubmitArticleData}>Publicar artigo</button>
           </div>
         </form>
       </div>

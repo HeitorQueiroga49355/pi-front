@@ -1,6 +1,12 @@
 import axios from 'axios'
+import { destroyCookie, parseCookies } from 'nookies'
+import { refreshToken } from './account'
 
 export const URL = process.env.NEXT_PUBLIC_BACK_URL
+export const [accessVarName, refreshVarName] = [
+  process.env.NEXT_PUBLIC_COOKIE_ACCESS,
+  process.env.NEXT_PUBLIC_COOKIE_REFRESH
+]
 
 export async function getArticles(pagination?: {
   limit: number
@@ -37,4 +43,34 @@ export async function getEmphasisArticles() {
 export async function getArticleData(articleSlug: string) {
   const articleData = await axios.get(`${URL}api/v1/articles/${articleSlug}`)
   return articleData.data
+}
+
+export async function createArticle(data: any, setUserData) {
+  const cookies = parseCookies()
+  return await axios
+    .post(`${URL}api/v1/articles/`, data, {
+      headers: {
+        Authorization: `Bearer ${cookies[accessVarName]}`
+      }
+    })
+    .then(res => {
+      return res.data
+    })
+    .catch(async res => {
+      if (res.response.status === 401) {
+        const newTokenAccess = await refreshToken(setUserData)
+        if (!newTokenAccess) {
+          destroyCookie(null, accessVarName)
+          destroyCookie(null, refreshVarName)
+          return
+        }
+        return await axios
+          .post(`${URL}api/v1/articles/`, data, {
+            headers: { Authorization: `Bearer ${newTokenAccess}` }
+          })
+          .then(res => {
+            return res.data
+          })
+      }
+    })
 }
