@@ -1,14 +1,40 @@
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import DefaultBackgroundAuthorProfile from '../../../../public/assets/imgs/devlopImages/DefaultBackgroundAuthorProfile.png'
-import AuthorImage from '../../../../public/assets/imgs/devlopImages/AuthorImage.png'
 import VerifiedIcon from '../../../../public/assets/icons/VerifiedIcon.svg'
 import useGetWidth from '../../../hooks/useGetWidth'
+import { userContext } from '../../../contexts/userDataContext'
+import { updateBiography } from '../../../services/account'
 
-export default function AuthorDataSection() {
+interface IAuthorDataSection {
+  authorData: any
+  countArticle: number
+}
+
+export default function AuthorDataSection({
+  authorData,
+  countArticle
+}: IAuthorDataSection) {
   const width = useGetWidth()
   const [editDescription, setEditDescription] = useState(false)
+  const [monthJoined, setMonthJoined] = useState('')
+  const { userData, setUserData } = useContext(userContext)
+
+  useEffect(() => {
+    setMonthJoined(getFormatMonth())
+  }, [])
+
+  function getFormatMonth() {
+    const option = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }
+    const locale = 'pt-br'
+    const date = new Date(authorData.date_joined)
+    return date.toLocaleDateString(locale, option as any)
+  }
   return (
     <>
       <StyledSection>
@@ -20,20 +46,28 @@ export default function AuthorDataSection() {
         </div>
         <StyledAuthorData>
           <div className="author-image">
-            <Image src={AuthorImage} alt="Author profile image" />
+            <Image
+              src={authorData.image_profile}
+              alt="Author profile image"
+              fill
+            />
           </div>
           <div className="author-name">
             <div className="container">
               <h2>
-                Heitor Queiroga Duarte
-                <Image
-                  src={VerifiedIcon}
-                  alt="Verified icon"
-                  width={width <= 480 ? 30 : 37}
-                  height={width <= 480 ? 30 : 37}
-                />
+                {`${authorData.first_name} ${authorData.last_name}`}
+                {authorData.is_staff && (
+                  <Image
+                    src={VerifiedIcon}
+                    alt="Verified icon"
+                    width={width <= 480 ? 30 : 37}
+                    height={width <= 480 ? 30 : 37}
+                  />
+                )}
               </h2>
-              <span>Perfil verificado pela equipe Paglaum</span>
+              {authorData.is_staff && (
+                <span>Perfil verificado pela equipe Paglaum</span>
+              )}
             </div>
           </div>
         </StyledAuthorData>
@@ -41,36 +75,34 @@ export default function AuthorDataSection() {
       <StyledDescriptionSection>
         <div className="container-description">
           <div className="activity">
-            <p className="activity-p">👋 Entrou em 2 de outubro de 2022</p>
-            <p className="activity-p">📝 5 artigos publicados</p>
-            <p className="activity-p">❤ 1534 Reações</p>
+            <p className="activity-p">👋 Entrou em {monthJoined}</p>
+            <p className="activity-p">📝 {countArticle} artigos publicados</p>
+            {/* <p className="activity-p">❤ 1534 Reações</p> */}
           </div>
           <div>
-            <button
-              onClick={() => {
-                setEditDescription(!editDescription)
-                setTimeout(() => {
-                  const description = document.getElementById('description')
-                  description.focus()
-                }, 100)
-              }}
-            >
-              {editDescription ? 'Salvar' : 'Editar descrição do perfil'}
-            </button>
+            {userData?.id === authorData.id && (
+              <button
+                onClick={() => {
+                  const biographyCamp = document.getElementById('description')
+                  setEditDescription(!editDescription)
+                  if (editDescription) {
+                    updateBiography(biographyCamp.innerHTML, setUserData)
+                  } else {
+                    setTimeout(() => {
+                      biographyCamp.focus()
+                    }, 100)
+                  }
+                }}
+              >
+                {editDescription ? 'Salvar' : 'Editar descrição do perfil'}
+              </button>
+            )}
             <p
               id="description"
               className="description"
               contentEditable={editDescription}
             >
-              Desenvolvedor front-end, solidity e rust para smart-contracts
-              solana. Estudante do Instituto federal do Rio Grande do Norte
-              (IFRN). Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
+              {authorData.biography}
             </p>
           </div>
         </div>
@@ -88,21 +120,31 @@ const StyledSection = styled.section`
   margin: 0 0 16px 0;
 
   div.background-image {
+    width: 100%;
     height: 240px;
     overflow: hidden;
+
+    img {
+      width: 100%;
+    }
   }
 `
 
 const StyledAuthorData = styled.div`
-  div.author-image > img {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  div.author-image {
     width: 160px;
     height: 160px;
 
+    position: relative;
+
+    overflow: hidden;
+
     border-radius: 100%;
     border: solid #d9d9d9 5px;
-  }
-  div.author-image {
-    width: 100%;
 
     display: flex;
     justify-content: center;

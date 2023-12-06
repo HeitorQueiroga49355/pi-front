@@ -64,3 +64,42 @@ export async function refreshToken(setUserData: Dispatch<SetStateAction<any>>) {
       setUserData({})
     })
 }
+
+export async function getAuthorData(slug: string) {
+  return axios.get(`${URL}api/v1/user/${slug}/`).then(res => res.data)
+}
+
+export async function updateBiography(content, setUserData) {
+  const cookies = parseCookies()
+  return await axios
+    .patch(
+      `${URL}api/v1/user/me`,
+      {
+        biography: content
+      },
+      {
+        headers: { Authorization: `Bearer ${cookies[access]}` }
+      }
+    )
+    .catch(async res => {
+      if (res.response.status === 401) {
+        const newTokenAccess = await refreshToken(setUserData)
+        if (!newTokenAccess) {
+          destroyCookie(null, access)
+          destroyCookie(null, refresh)
+          return
+        }
+        return await axios
+          .patch(
+            `${URL}api/v1/user/me`,
+            { biography: content },
+            {
+              headers: { Authorization: `Bearer ${newTokenAccess}` }
+            }
+          )
+          .then(res => {
+            return res.data
+          })
+      }
+    })
+}

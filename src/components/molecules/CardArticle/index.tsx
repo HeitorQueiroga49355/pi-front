@@ -36,7 +36,7 @@ export default function CardArticle({ articleData }: ICardArticle) {
             width={25}
             height={25}
           />
-          <Link href="/autor/exemplo">Heitor Queiroga</Link>
+          <Link href={`/autor/${articleData.author.id}`}>Heitor Queiroga</Link>
         </DataAuthor>
         <PostDate>19 de Setembro de 2022</PostDate>
       </DataArticle>
