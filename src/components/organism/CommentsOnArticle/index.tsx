@@ -10,7 +10,9 @@ export function CommentsOnArticle() {
   const [commentList, setCommentList] = useState([])
   const router = useRouter()
   useEffect(() => {
-    getCommentsPerArticle(parseInt(router.query.slug.toString()))
+    getCommentsPerArticle(parseInt(router.query.slug.toString())).then(res => {
+      setCommentList(res)
+    })
   }, [])
   return (
     <StyledWrapper>
@@ -25,7 +27,7 @@ export function CommentsOnArticle() {
             <div className="comment">
               <div className="comment-profile">
                 <Image
-                  src={AuthorImage}
+                  src={element.author.image_profile}
                   width={70}
                   height={70}
                   alt="Author image profile"
@@ -34,39 +36,18 @@ export function CommentsOnArticle() {
               </div>
               <div className="comment-data">
                 <strong className="comment-data__authorName">
-                  Heitor Queiroga Duarte
-                  {/* {articleData.author.is_staff && ( */}
-                  <Image
-                    alt="Ícone de verificado"
-                    src={VerifiedIcon}
-                    width={20}
-                    height={20}
-                    className="verified-icon"
-                  />
-                  {/* )} */}
+                  {element.author.username}
+                  {element.author.is_staff && (
+                    <Image
+                      alt="Ícone de verificado"
+                      src={VerifiedIcon}
+                      width={20}
+                      height={20}
+                      className="verified-icon"
+                    />
+                  )}
                 </strong>
-                <span className="comment-data__content">
-                  Comentário aqui porra!!!!!!! Comentário aqui porra!!!!!!!
-                  Comentário aqui porra!!!!!!! Comentário aqui porra!!!!!!!
-                  Comentário aqui porra!!!!!!! Comentário aqui porra!!!!!!!
-                  Comentário aqui porra!!!!!!!aqui porra!!!!!!! Comentário aqui
-                  porra!!!!!!! Comentário aqui porra!!!!!!! Comentário aqui
-                  porra!!!!!!! Comentário aqui porra!!!!!!! Comentário aqui
-                  porra!!!!!!! Comentário aqui porra!!!!!!!aqui porra!!!!!!!
-                  Comentário aqui porra!!!!!!! Comentário aqui porra!!!!!!!
-                  Comentário aqui porra!!!!!!! Comentário aqui porra!!!!!!!
-                  Comentário aqui porra!!!!!!! Comentário aqui porra!!!!!!!aqui
-                  porra!!!!!!! Comentário aqui porra!!!!!!! Comentário aqui
-                  porra!!!!!!! Comentário aqui porra!!!!!!! Comentário aqui
-                  porra!!!!!!! Comentário aqui porra!!!!!!! Comentário aqui
-                  porra!!!!!!!aqui porra!!!!!!! Comentário aqui porra!!!!!!!
-                  Comentário aqui porra!!!!!!! Comentário aqui porra!!!!!!!
-                  Comentário aqui porra!!!!!!! Comentário aqui porra!!!!!!!
-                  Comentário aqui porra!!!!!!!aqui porra!!!!!!! Comentário aqui
-                  porra!!!!!!! Comentário aqui porra!!!!!!! Comentário aqui
-                  porra!!!!!!! Comentário aqui porra!!!!!!! Comentário aqui
-                  porra!!!!!!! Comentário aqui porra!!!!!!!
-                </span>
+                <span className="comment-data__content">{element.text}</span>
               </div>
             </div>
           </StyledCardComment>
