@@ -9,6 +9,7 @@ function MyApp({ Component, pageProps }) {
   const [userData, setUserData] = useState<any>({})
   useEffect(() => {
     getMeData(setUserData).then(res => {
+      console.log(res)
       setUserData(res)
     })
   }, [])

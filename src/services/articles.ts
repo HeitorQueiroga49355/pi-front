@@ -74,3 +74,33 @@ export async function createArticle(data: any, setUserData) {
       }
     })
 }
+
+export async function updateArticle(data: any, articleId: string, setUserData) {
+  const cookies = parseCookies()
+  return await axios
+    .patch(`${URL}api/v1/articles/${articleId}/`, data, {
+      headers: {
+        Authorization: `Bearer ${cookies[accessVarName]}`
+      }
+    })
+    .then(res => {
+      return res.data
+    })
+    .catch(async res => {
+      if (res.response.status === 401) {
+        const newTokenAccess = await refreshToken(setUserData)
+        if (!newTokenAccess) {
+          destroyCookie(null, accessVarName)
+          destroyCookie(null, refreshVarName)
+          return
+        }
+        return await axios
+          .patch(`${URL}api/v1/articles/${articleId}/`, data, {
+            headers: { Authorization: `Bearer ${newTokenAccess}` }
+          })
+          .then(res => {
+            return res.data
+          })
+      }
+    })
+}

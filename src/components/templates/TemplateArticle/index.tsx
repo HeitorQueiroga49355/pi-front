@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import VerifiedIcon from '../../../../public/assets/imgs/VerifiedIcon.png'
 import Image from 'next/image'
@@ -6,6 +6,8 @@ import AuthorImage from '../../../../public/assets/imgs/devlopImages/AuthorImage
 import Link from 'next/link'
 import { CommentsOnArticle } from '../../organism/CommentsOnArticle'
 import { formatDataToBrasil } from '../../../utils/formatData'
+import { useRouter } from 'next/router'
+import { userContext } from '../../../contexts/userDataContext'
 
 interface ITemplateArticle {
   articleData: any
@@ -16,70 +18,95 @@ export default function TemplateArticle({
   articleData,
   recentArticles
 }: ITemplateArticle) {
+  const router = useRouter()
+  const { userData } = useContext(userContext)
   return (
-    <StyledContainer>
-      <div className="content-wrapper">
-        <StyledMain>
-          <h1>{articleData.title}</h1>
-          <StyledCreationData>
-            <Link href={`/autor/${articleData.author.id}`}>
-              Por:{' '}
-              {`${articleData.author.first_name} ${articleData.author.last_name}`}
-              {articleData.author.is_staff && (
-                <Image
-                  alt="Ícone de verificado"
-                  src={VerifiedIcon}
-                  width={18}
-                  height={18}
-                  className="verified-icon"
-                />
-              )}
-            </Link>
-            <div>
-              Editado a última vez em:{' '}
-              {formatDataToBrasil(articleData.last_edition)}
-            </div>
-          </StyledCreationData>
-          <StyledContent
-            dangerouslySetInnerHTML={{ __html: articleData.content }}
-          />
-          <CommentsOnArticle />
-        </StyledMain>
-        <StyledAside>
-          {/* <button>
+    <>
+      <StyledContainer>
+        <div className="content-wrapper">
+          <StyledMain>
+            {userData?.id === articleData.author.id && (
+              <StyledOwnerButtons>
+                <button
+                  className="editButton"
+                  onClick={() => {
+                    router.push('/editar-artigo/' + articleData.id)
+                  }}
+                >
+                  Editar artigo
+                </button>
+                <button
+                  className="deleteButton"
+                  onClick={() => {
+                    router.push('/editar-artigo/' + articleData.id)
+                  }}
+                >
+                  Deletar
+                </button>
+              </StyledOwnerButtons>
+            )}
+
+            <h1>{articleData.title}</h1>
+            <StyledCreationData>
+              <Link href={`/autor/${articleData.author.id}`}>
+                Por:{' '}
+                {`${articleData.author.first_name} ${articleData.author.last_name}`}
+                {articleData.author.is_staff && (
+                  <Image
+                    alt="Ícone de verificado"
+                    src={VerifiedIcon}
+                    width={18}
+                    height={18}
+                    className="verified-icon"
+                  />
+                )}
+              </Link>
+              <div>
+                Editado a última vez em:{' '}
+                {formatDataToBrasil(articleData.last_edition)}
+              </div>
+            </StyledCreationData>
+            <StyledContent
+              dangerouslySetInnerHTML={{ __html: articleData.content }}
+            />
+            <CommentsOnArticle />
+          </StyledMain>
+          <StyledAside>
+            {/* <button>
             Doar para o autor<strong>{'>'}</strong>
           </button> */}
-          <h3>Artigos recentes</h3>
-          {recentArticles.results.map(element => {
-            return (
-              <StyledCardRecentArticle key={element.id}>
-                <div className="title-article">
-                  <Link
-                    style={{ textDecoration: 'none', color: '#000' }}
-                    href={`/artigo/${element.id}/`}
-                  >
-                    {element.title}
-                  </Link>
-                </div>
-                <div className="author">
-                  <Image alt={'imagem do autor'} src={AuthorImage} />
-                  {`${articleData.author.first_name} ${articleData.author.last_name}`}
-                  {articleData.author.is_staff && (
-                    <Image
-                      alt="Ícone de verificado"
-                      src={VerifiedIcon}
-                      width={20}
-                      height={20}
-                      className="verified-icon"
-                    />
-                  )}
-                </div>
-              </StyledCardRecentArticle>
-            )
-          })}
-        </StyledAside>
-      </div>
-    </StyledContainer>
+            <h3>Artigos recentes</h3>
+            {recentArticles.results.map(element => {
+              return (
+                <StyledCardRecentArticle key={element.id}>
+                  <div className="title-article">
+                    <Link
+                      style={{ textDecoration: 'none', color: '#000' }}
+                      href={`/artigo/${element.id}/`}
+                    >
+                      {element.title}
+                    </Link>
+                  </div>
+                  <div className="author">
+                    <Image alt={'imagem do autor'} src={AuthorImage} />
+                    {`${articleData.author.first_name} ${articleData.author.last_name}`}
+                    {articleData.author.is_staff && (
+                      <Image
+                        alt="Ícone de verificado"
+                        src={VerifiedIcon}
+                        width={20}
+                        height={20}
+                        className="verified-icon"
+                      />
+                    )}
+                  </div>
+                </StyledCardRecentArticle>
+              )
+            })}
+          </StyledAside>
+        </div>
+      </StyledContainer>
+    </>
   )
 }
 
@@ -90,6 +117,9 @@ const StyledContainer = styled.section`
   justify-content: center;
 
   margin: 40px 0 0 0;
+
+  .edit-article-button {
+  }
 
   div.content-wrapper {
     width: max-content;
@@ -114,6 +144,8 @@ const StyledMain = styled.main`
   font-size: 32px;
   line-height: 48px;
   color: #000000;
+
+  position: relative;
 
   h1 {
     margin: 0 0 8px 0;
@@ -279,5 +311,47 @@ const StyledCardRecentArticle = styled.div`
     border-radius: 100%;
 
     margin: 0 0.75rem 0 0;
+  }
+`
+
+const StyledOwnerButtons = styled.div`
+  .editButton {
+    font-weight: 400;
+    font-size: 18px;
+    color: #fff;
+
+    padding: 8px;
+
+    border-radius: 8px;
+
+    border: none;
+
+    background: #280633;
+
+    cursor: pointer;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .deleteButton {
+    font-weight: 400;
+    font-size: 18px;
+    color: #fff;
+
+    padding: 8px;
+
+    border-radius: 8px;
+
+    border: none;
+
+    background: red;
+
+    cursor: pointer;
+
+    position: absolute;
+    top: 0;
+    right: 140px;
   }
 `

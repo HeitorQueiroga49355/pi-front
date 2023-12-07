@@ -4,13 +4,34 @@ import styled from 'styled-components'
 import UploadImage from '../../../../public/assets/imgs/uploadImage.png'
 import { useRouter } from 'next/router'
 import { userContext } from '../../../contexts/userDataContext'
-import { createArticle } from '../../../services/articles'
-
-export default function EditDocumentContent() {
+import { createArticle, updateArticle } from '../../../services/articles'
+interface IEditDocumentContent {
+  initialArticleData: any
+  isEditingPage?: boolean
+}
+export default function EditDocumentContent({
+  initialArticleData,
+  isEditingPage
+}: IEditDocumentContent) {
   const [articleCover, setArticleCover] = useState<string | undefined | null>()
   const router = useRouter()
   const { userData, setUserData } = useContext(userContext)
   const articleCoverFile = useRef()
+
+  useEffect(() => {
+    if (isEditingPage) {
+      const title = document.getElementById('title-input') as HTMLInputElement
+      const subtitle = document.getElementById(
+        'subtitle-input'
+      ) as HTMLInputElement
+      const content = document.getElementById('editor')
+
+      title.value = initialArticleData.title
+      subtitle.value = initialArticleData.subtitle
+      setArticleCover(initialArticleData.cover_image)
+      content.innerHTML = initialArticleData.content
+    }
+  }, [])
 
   useEffect(() => {
     const table: any = document.querySelector('.icon-table')
@@ -80,7 +101,7 @@ export default function EditDocumentContent() {
     document.execCommand(comand)
   }
 
-  function handleSubmitArticleData(event: any) {
+  function handleSubmitNewArticleData(event: any) {
     event.preventDefault()
     const formData = new FormData()
     formData.append(
@@ -95,7 +116,29 @@ export default function EditDocumentContent() {
     formData.append('content', document.getElementById('editor').innerHTML)
     createArticle(formData, setUserData)
       .then((res: any) => {
-        console.log(res)
+        router.push('/artigo/' + res.id)
+      })
+      .catch(error => {
+        alert(error)
+      })
+  }
+
+  function handleSubmitArticleUpdates(event: any) {
+    event.preventDefault()
+    const formData = new FormData()
+    formData.append(
+      'title',
+      (document.getElementById('title-input') as HTMLInputElement).value
+    )
+    formData.append(
+      'subtitle',
+      (document.getElementById('subtitle-input') as HTMLInputElement).value
+    )
+    if (articleCoverFile.current)
+      formData.append('cover_image', articleCoverFile.current)
+    formData.append('content', document.getElementById('editor').innerHTML)
+    updateArticle(formData, router.query.slug.toString(), setUserData)
+      .then((res: any) => {
         router.push('/artigo/' + res.id)
       })
       .catch(error => {
@@ -115,7 +158,7 @@ export default function EditDocumentContent() {
         />
         <form>
           <h2>
-            {router.asPath.includes('criar-documento') ? 'Criação ' : 'Edição '}
+            {isEditingPage ? 'Criação ' : 'Edição '}
             de artigos
           </h2>
 
@@ -242,7 +285,14 @@ export default function EditDocumentContent() {
             <div id="editor" contentEditable />
           </StyledEditor>
           <div className="publish-button-wrapper">
-            <button onClick={handleSubmitArticleData}>Publicar artigo</button>
+            <button
+              onClick={e => {
+                if (isEditingPage) handleSubmitArticleUpdates(e)
+                else handleSubmitNewArticleData(e)
+              }}
+            >
+              Publicar{isEditingPage ? ' edição' : 'artigo'}
+            </button>
           </div>
         </form>
       </div>
@@ -317,7 +367,8 @@ const StyledMain = styled.main`
   }
 
   label.upload-image-cover > img.uploaded-image {
-    width: 750px;
+    width: 80vw;
+    max-width: 750px;
   }
 
   div.publish-button-wrapper {
