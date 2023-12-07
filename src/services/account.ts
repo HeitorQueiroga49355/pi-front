@@ -97,3 +97,60 @@ export async function updateBiography(content, setUserData) {
       }
     })
 }
+
+export async function logout(setUserData) {
+  setUserData({})
+  destroyCookie(null, accessVarName)
+  destroyCookie(null, refreshVarName)
+}
+
+export async function registerUser(data: any, setUserData) {
+  return await axios.post(`${URL}api/v1/user/`, data).then(async res => {
+    await submitLogin(
+      {
+        email: data.get('email'),
+        password: data.get('password')
+      },
+      setUserData
+    ).then(() => {
+      sendConfirmationEmail(setUserData)
+    })
+  })
+}
+
+function sendConfirmationEmail(setUserData) {
+  const cookies = parseCookies()
+  axios
+    .post(
+      `${URL}api/v1/send-confirmation-email/`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${cookies[accessVarName]}` }
+      }
+    )
+    .then(() => {
+      alert('Valide a sua conta pelo email que acabamos de lhe enviar')
+      setUserData({})
+    })
+    .catch(async res => {
+      if (res.response.status === 401) {
+        const newTokenAccess = await refreshToken(setUserData)
+        if (!newTokenAccess) {
+          destroyCookie(null, accessVarName)
+          destroyCookie(null, refreshVarName)
+          return
+        }
+        return await axios
+          .post(
+            `${URL}api/v1/send-confirmation-email/`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${newTokenAccess}` }
+            }
+          )
+          .then(res => {
+            return res.data
+          })
+      }
+    })
+}

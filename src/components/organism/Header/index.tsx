@@ -13,13 +13,14 @@ import useGetWidth from '../../../hooks/useGetWidth'
 import ModalLogin from '../../molecules/ModalLogin'
 import { userContext } from '../../../contexts/userDataContext'
 import { URL } from '../../../services/articles'
+import { logout } from '../../../services/account'
 
 export default function Header() {
   const [openDropdown, setOpenDropdown] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const socialMediaDropdownRef = useRef<DropdownFunctions>()
   const [hideElements, setHideElements] = useState(false)
-  const { userData } = useContext(userContext)
+  const { userData, setUserData } = useContext(userContext)
   const width = useGetWidth()
 
   return (
@@ -120,9 +121,12 @@ export default function Header() {
           />
           <div className={hideElements && width < 960 ? 'hidden' : 'show'}>
             {userData?.id !== undefined ? (
-              <div className="wrapperImageProfile">
+              <div
+                className="wrapperImageProfile"
+                onClick={() => logout(setUserData)}
+              >
                 <Image
-                  src={`${URL}${userData.image_profile}`}
+                  src={`${userData.image_profile}`}
                   fill
                   alt="profile image"
                 />

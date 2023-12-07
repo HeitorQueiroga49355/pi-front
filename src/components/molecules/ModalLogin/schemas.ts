@@ -9,6 +9,7 @@ export const RegisterSchema = Yup.object().shape({
     .min(3, 'Mínimo 3 caracteres')
     .max(50, 'Máximo 50 caracteres')
     .required('Preencha o campo'),
+  username: Yup.string().required('preencha o campo'),
   email: Yup.string()
     .min(3, 'Mínimo 3 caracteres')
     .email('Formato de E-mail inválido')

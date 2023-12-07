@@ -1,13 +1,14 @@
 import Modal from '../../atoms/Modal'
 import styled from 'styled-components'
-import Image from 'next/image'
 import IconClose from '../../../../public/assets/icons/closeIcon.svg'
 import Logo from '../../../../public/assets/imgs/logo.png'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { useFormik } from 'formik'
 import { RegisterSchema, LoginSchema } from './schemas'
-import { submitLogin } from '../../../services/account'
+import { registerUser, submitLogin } from '../../../services/account'
 import { userContext } from '../../../contexts/userDataContext'
+import NextImage from 'next/image'
+import UploadImage from '../../../../public/assets/imgs/uploadImage.png'
 
 interface ModalLoginProps {
   closeMethod: () => unknown
@@ -16,6 +17,10 @@ interface ModalLoginProps {
 export default function ModalLogin({ closeMethod }: ModalLoginProps) {
   const [selected, setSeleted] = useState<'left' | 'right'>('left')
   const { setUserData } = useContext(userContext)
+  const [imageProfileBase64, setImageProfileBase64] = useState<
+    string | undefined | null
+  >()
+  const imageProfileFile = useRef()
 
   const formRegister = useFormik({
     initialValues: {
@@ -23,11 +28,24 @@ export default function ModalLogin({ closeMethod }: ModalLoginProps) {
       lastName: '',
       email: '',
       password: '',
+      username: '',
       confirmPassword: ''
     },
     validationSchema: RegisterSchema,
-    onSubmit: values => console.log(values)
+    onSubmit: values => {
+      const formData = new FormData()
+      formData.append('first_name', values.firstName)
+      formData.append('last_name', values.lastName)
+      formData.append('email', values.email)
+      formData.append('password', values.password)
+      formData.append('username', values.username)
+      if (imageProfileFile.current)
+        formData.append('image_profile', imageProfileFile.current)
+      else alert('Adicione uma imagem de perfil')
+      registerUser(formData, setUserData)
+    }
   })
+  console.log(formRegister.errors)
   const formLogin = useFormik({
     initialValues: {
       email: '',
@@ -52,12 +70,24 @@ export default function ModalLogin({ closeMethod }: ModalLoginProps) {
     }
   })
 
+  function uploadImageProfile(event: any) {
+    imageProfileFile.current = event.currentTarget.files[0]
+    const reader = new FileReader()
+    const img: any = new Image(750)
+    reader.onloadend = () => {
+      img.src = reader.result
+      setImageProfileBase64(img.src)
+    }
+    reader.readAsDataURL(imageProfileFile.current)
+  }
+  console.log(formRegister.errors)
+
   return (
     <Modal closeMethod={closeMethod}>
       <Container onClick={e => e.stopPropagation()}>
         <CloseButton onClick={closeMethod} />
         <ImageContainer>
-          <Image
+          <NextImage
             src={Logo.src}
             alt="Logo da Paglaum"
             width={110}
@@ -95,6 +125,12 @@ export default function ModalLogin({ closeMethod }: ModalLoginProps) {
         >
           {selected === 'left' ? (
             <>
+              <input
+                type="file"
+                id="upload-image-profile"
+                onChange={uploadImageProfile}
+                hidden
+              />
               <Label htmlFor="firstName">Nome</Label>
               <Input
                 name="firstName"
@@ -119,6 +155,14 @@ export default function ModalLogin({ closeMethod }: ModalLoginProps) {
                 value={formRegister.values.email}
                 onChange={formRegister.handleChange}
               />
+              <Label htmlFor="email">Username</Label>
+              <Input
+                name="username"
+                id="username"
+                type="text"
+                value={formRegister.values.username}
+                onChange={formRegister.handleChange}
+              />
               <Label htmlFor="password">Senha</Label>
               <Input
                 name="password"
@@ -135,6 +179,28 @@ export default function ModalLogin({ closeMethod }: ModalLoginProps) {
                 value={formRegister.values.confirmPassword}
                 onChange={formRegister.handleChange}
               />
+              <label
+                htmlFor="upload-image-profile"
+                className="upload-image-profile"
+              >
+                {!imageProfileBase64 ? (
+                  <>
+                    <NextImage
+                      src={UploadImage}
+                      alt="Ícone de upload de imagem"
+                      className="icon-upload"
+                    />
+                    <p>Subir imagem de perfil</p>
+                  </>
+                ) : (
+                  <div className="upload-wrapper-camp">
+                    <div className="uploaded-image-wrapper">
+                      <img src={imageProfileBase64} />
+                    </div>
+                    <span>{formRegister.values.username} </span>
+                  </div>
+                )}
+              </label>
             </>
           ) : (
             <>
@@ -266,6 +332,47 @@ const FormsContainer = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+
+  .upload-image-profile {
+    margin: 8px 0 0 0;
+    display: flex;
+
+    width: 100%;
+
+    cursor: pointer;
+
+    .icon-upload {
+      width: 30px;
+      height: 30px;
+    }
+
+    p {
+      margin: 3.5px 0 0 8px;
+    }
+  }
+
+  .upload-wrapper-camp {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .uploaded-image-wrapper {
+    width: 140px;
+    height: 140px;
+
+    border-radius: 100%;
+
+    position: relative;
+
+    overflow: hidden;
+    img {
+      width: 140px;
+      height: 140px;
+    }
+  }
 `
 
 const Label = styled.label`
