@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { userContext } from '../../../contexts/userDataContext'
 import { createArticle, updateArticle } from '../../../services/articles'
 interface IEditDocumentContent {
-  initialArticleData: any
+  initialArticleData?: any
   isEditingPage?: boolean
 }
 export default function EditDocumentContent({

@@ -6,6 +6,7 @@ import PaginationArticles from '../components/organism/PaginationArticles'
 import Footer from '../components/organism/Footer'
 import { GetServerSidePropsContext } from 'next'
 import { getArticles, getEmphasisArticles } from '../services/articles'
+import Head from 'next/head'
 
 interface IHome {
   articles: any
@@ -15,6 +16,9 @@ interface IHome {
 export default function Home({ articles, emphasisArticles }: IHome) {
   return (
     <>
+      <Head>
+        <title>Página inicial</title>
+      </Head>
       <Header />
       <HomePageTitle />
       <SlideEmphasisArticles emphasisArticles={emphasisArticles} />

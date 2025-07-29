@@ -4,6 +4,7 @@ import Footer from '../../components/organism/Footer'
 import Header from '../../components/organism/Header'
 import { GetServerSidePropsContext } from 'next'
 import { getArticleData } from '../../services/articles'
+import Head from 'next/head'
 
 interface IEditDocument {
   initialArticleData: any
@@ -12,6 +13,9 @@ interface IEditDocument {
 export default function EditDocument({ initialArticleData }: IEditDocument) {
   return (
     <>
+      <Head>
+        <title>Editar artigo</title>
+      </Head>
       <Header />
       <EditDocumentContent
         initialArticleData={initialArticleData}

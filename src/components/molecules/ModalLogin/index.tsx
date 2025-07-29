@@ -45,7 +45,6 @@ export default function ModalLogin({ closeMethod }: ModalLoginProps) {
       registerUser(formData, setUserData)
     }
   })
-  console.log(formRegister.errors)
   const formLogin = useFormik({
     initialValues: {
       email: '',
@@ -80,7 +79,6 @@ export default function ModalLogin({ closeMethod }: ModalLoginProps) {
     }
     reader.readAsDataURL(imageProfileFile.current)
   }
-  console.log(formRegister.errors)
 
   return (
     <Modal closeMethod={closeMethod}>

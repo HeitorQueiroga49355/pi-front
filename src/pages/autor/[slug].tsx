@@ -6,6 +6,7 @@ import InfinityScrollArticles from '../../components/organism/PaginationArticles
 import { GetServerSidePropsContext } from 'next'
 import { getArticlesPerAuthor } from '../../services/articles'
 import { getAuthorData } from '../../services/account'
+import Head from 'next/head'
 
 interface IAuthor {
   articles: any
@@ -15,6 +16,9 @@ interface IAuthor {
 export default function Author({ articles, authorData }: IAuthor) {
   return (
     <>
+      <Head>
+        <title>{authorData.username}</title>
+      </Head>
       <Header />
       <AuthorDataSection
         countArticle={articles.count}

@@ -4,6 +4,7 @@ import Header from '../../components/organism/Header'
 import TemplateArticle from '../../components/templates/TemplateArticle'
 import { GetServerSidePropsContext } from 'next'
 import { getArticleData, getArticles } from '../../services/articles'
+import Head from 'next/head'
 
 interface IArticle {
   articleData: any
@@ -13,6 +14,9 @@ interface IArticle {
 export default function Article({ articleData, recentArticles }: IArticle) {
   return (
     <>
+      <Head>
+        <title>{articleData.title}</title>
+      </Head>
       <Header />
       <TemplateArticle
         articleData={articleData}

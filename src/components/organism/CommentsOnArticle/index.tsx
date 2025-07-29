@@ -1,25 +1,57 @@
 import styled from 'styled-components'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AuthorImage from '../../../../public/assets/imgs/devlopImages/AuthorImage.png'
 import VerifiedIcon from '../../../../public/assets/imgs/VerifiedIcon.png'
 import Image from 'next/image'
-import { getCommentsPerArticle } from '../../../services/comments'
+import {
+  createComment,
+  getCommentsPerArticle
+} from '../../../services/comments'
 import { useRouter } from 'next/router'
+import { userContext } from '../../../contexts/userDataContext'
 
 export function CommentsOnArticle() {
   const [commentList, setCommentList] = useState([])
   const router = useRouter()
+  const { setUserData, userData } = useContext(userContext)
+
   useEffect(() => {
     getCommentsPerArticle(parseInt(router.query.slug.toString())).then(res => {
       setCommentList(res)
     })
   }, [])
+
+  function handleSubmitComment() {
+    const commentInput = document.getElementById(
+      'comment-to-submit'
+    ) as HTMLInputElement
+    const commentText = commentInput.value
+    createComment(commentText, router.query.slug, setUserData).then(res => {
+      setCommentList(prev => [
+        ...prev,
+        {
+          ...res,
+          author: {
+            id: userData.id,
+            image_profile: userData.image_profile,
+            username: userData?.username,
+            is_staff: userData.is_staff
+          }
+        }
+      ])
+    })
+  }
+
   return (
     <StyledWrapper>
       <h3>Comentários</h3>
       <div className="wrapper-send-camp">
-        <input type="text" placeholder="Escreva um comentário..." />
-        <button>Enviar</button>
+        <input
+          type="text"
+          id="comment-to-submit"
+          placeholder="Escreva um comentário..."
+        />
+        <button onClick={handleSubmitComment}>Enviar</button>
       </div>
       {commentList.map(element => {
         return (
