@@ -29,7 +29,7 @@ export default function SlideEmphasisArticles({
               <SwiperSlide key={element.id}>
                 <SlideContent>
                   <div className="wrapper-image">
-                    <Link href={`/artigo/${element.id}`}>
+                    <Link href={`/artigo/${element.slug}`}>
                       <Image
                         objectFit="cover"
                         fill

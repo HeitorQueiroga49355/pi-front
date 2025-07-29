@@ -116,7 +116,7 @@ export default function EditDocumentContent({
     formData.append('content', document.getElementById('editor').innerHTML)
     createArticle(formData, setUserData)
       .then((res: any) => {
-        router.push('/artigo/' + res.id)
+        router.push('/')
       })
       .catch(error => {
         alert(error)
@@ -291,7 +291,7 @@ export default function EditDocumentContent({
                 else handleSubmitNewArticleData(e)
               }}
             >
-              Publicar{isEditingPage ? ' edição' : 'artigo'}
+              Publicar {isEditingPage ? ' edição' : 'artigo'}
             </button>
           </div>
         </form>

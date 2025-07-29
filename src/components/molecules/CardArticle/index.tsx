@@ -13,7 +13,7 @@ export default function CardArticle({ articleData }: ICardArticle) {
   return (
     <CardWrapper>
       <WrapperImage>
-        <Link href={`/artigo/${articleData.id}`}>
+        <Link href={`/artigo/${articleData.slug}`}>
           <Image
             className="front-cover-article"
             alt="Capa do artigo"
